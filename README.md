@@ -44,9 +44,9 @@ A simple python chat program
      1. Is `secret` a non-empty string of 12-64 characters?  No: return `HTTP/401`.
      1. Does `userHandle` exist? No: Return `HTTP/400`.
      1. Is `userHandle` a non-empty string of 3-64 characters?  No: return `HTTP/400`.
-  1. Open `<root>/users/secret.dat`
+  1. Open `<root>/secret.dat`
      1. Error: Return `HTTP/500`
-  1. Read `<root>/users/secret.dat` contents.  Do contents match `secret` string?  No: Return `HTTP/403`
+  1. Read `<root>/secret.dat` contents.  Do contents match `secret` string?  No: Return `HTTP/403`
   1. Generate random string (`authToken`)
   1. Generate unique integer (`myId`) for the new user.
   1. Create file `<root>/users/<myId>.dat` and write `authToken` to the file.
