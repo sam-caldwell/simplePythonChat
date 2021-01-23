@@ -6,6 +6,8 @@
     users.
 
 """
+from os.path import join
+from os.path import dirname
 from flask import Flask, request
 from src.register_user import register_user
 from src.query_user import query_user
@@ -13,6 +15,8 @@ from src.chat_send import chat_send
 from src.chat_recv import chat_recv
 
 APP_VERSION = "1.0"
+DATA_ROOT = join(dirname(__file__), "data")
+AUTH_SECRET_FILE = join(DATA_ROOT, "secret.dat")
 app = Flask(__name__)
 
 
@@ -32,7 +36,7 @@ def api_v1_register():
         :return: string, int
     """
     if request.method == "POST":
-        return register_user(request)
+        return register_user(request, AUTH_SECRET_FILE)
     elif request.method == "GET":
         return query_user(request)
     else:
