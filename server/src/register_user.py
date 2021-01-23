@@ -1,12 +1,76 @@
 import json
+import time
+import hashlib
+from os.path import join
+from os.path import exists
 
-def register_user(request, auth_secret_file):
+
+def user_hash(input_string):
+    """
+        sha256 hash of a given string.
+
+        :param input_string: str
+        :return: str (hex)
+    """
+    m = hashlib.sha256()
+    m.update(input_string.encode('ASCII'))
+    return m.hexdigest()
+
+
+def user_profile(user_data, user_id):
+    """
+        Return a filename for the user's profile.
+
+        :param user_data: string
+        :param user_id: string
+        :return: string
+    """
+    return join(user_data, f"{user_id}.dat")
+
+
+def generate_user_id(user_data):
+    """
+        Generate a user ID using a timestamp and ensure it is
+        unique.
+        :return: int
+    """
+    while True:
+        user_id = int(time.time() * 1000000)
+        if not exists(user_profile(user_data, user_id)):
+            return user_id
+        print("user_id collision: {user_id}")
+
+
+def create_user_profile(user_data, user_id, user_handle):
+    """
+        Create a user profile <root>/data/users/<user_id>.dat file
+        Create a user profile <root>/data/users/<handle_hash>.dat file
+
+    :param user_data: string
+    :param user_id: string
+    :param user_handle: string
+    :return: none
+    """
+    with open(user_profile(user_data, user_hash(user_handle)), "w") as f:
+        print("Create the user file (handle hash).")
+        f.write(str(user_id))
+
+    with open(user_profile(user_data, user_id), "w") as f:
+        print("Create the user file (user_id).")
+        f.write(user_hash(user_handle))
+
+
+
+def register_user(request, user_data, auth_secret_file):
     """
         Registration API (POST: /api/v1/register)
 
         Allows a user to register their handle and get a UserId to post chat messages.
 
-        :param request:
+        :param request: http flask request
+        :param user_data: string (directory)
+        :param auth_secret_file: string (path/filename)
+
         :return: string(json), int
             Success (HTTP/200 OK):
                 {
@@ -31,26 +95,41 @@ def register_user(request, auth_secret_file):
                   "status": "INTERNAL SERVER ERROR"
                 }
     """
-    secret,userHandle="",""
+    secret, user_handle = "", ""
     try:
         body = request.json
         if "secret" in body:
-            secret=body["secret"]
+            secret = body["secret"]
         else:
-            return json.dumps({"status":"UNAUTHORIZED"}), 401
-        if "userHandle" in body:
-            userHandle=body["userHandle"]
+            return json.dumps({"status": "UNAUTHORIZED"}), 401
+        if "user_handle" in body:
+            user_handle = body["user_handle"]
         else:
-            return json.dumps({"status":"Bad Request"}), 400
+            return json.dumps({"status": "Bad Request"}), 400
     except Exception as e:
         print(f"Error(parse): {e}")
         return json.dumps({"status": "BAD_REQUEST"}), 400
 
     try:
         # Inspect secret to authenticate operation.
-        with open(auth_secret_file,"r") as f:
-            if f.read() != secret:
-                return json.dumps({"status":"FORBIDDEN"}), 403
+        with open(auth_secret_file, "r") as f:
+            actual_secret = f.read()
+            if actual_secret != secret:
+                return json.dumps({"status": "FORBIDDEN"}), 403
+        print("registration authentication success")
     except Exception as e:
         print(f"Error(auth): {e}")
         return json.dumps({"status": "INTERNAL SERVER ERROR"}), 500
+
+    # We are authenticated...
+    try:
+        user_id = generate_user_id(user_data)
+        print(f"user_id: {user_id}")
+
+        create_user_profile(user_data, user_id, user_handle)
+
+    except Exception as e:
+        print(f"Error(auth): {e}")
+        return json.dumps({"status": "INTERNAL SERVER ERROR"}), 500
+
+    return "OK", 200

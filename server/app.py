@@ -16,6 +16,7 @@ from src.chat_recv import chat_recv
 
 APP_VERSION = "1.0"
 DATA_ROOT = join(dirname(__file__), "data")
+USER_DATA = join(DATA_ROOT, "users")
 AUTH_SECRET_FILE = join(DATA_ROOT, "secret.dat")
 app = Flask(__name__)
 
@@ -36,7 +37,7 @@ def api_v1_register():
         :return: string, int
     """
     if request.method == "POST":
-        return register_user(request, AUTH_SECRET_FILE)
+        return register_user(request, USER_DATA, AUTH_SECRET_FILE)
     elif request.method == "GET":
         return query_user(request)
     else:
