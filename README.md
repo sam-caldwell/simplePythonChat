@@ -14,6 +14,7 @@ A simple python chat program
   1. API should run in a container.
 
 # API Specification
+
 ## Registration API (`POST`: `/api/v1/register`)
 ### Purpose
   Allows a user to register their handle and get a UserId to post chat messages.
@@ -37,33 +38,9 @@ A simple python chat program
   * Failure (`HTTP/403 FORBIDDEN`): an invalid secret.
   * Failure (`HTTP/500 INTERNAL SERVER ERROR`): Unhandled exception.
 
-### Operation:
-  1. Parse request and sanitize the inputs.
-     1. Is request body parsable JSON? No: return `HTTP/400`.
-     1. Does `secret` exist? No: return `HTTP/401`.
-     1. Is `secret` a non-empty string of 12-64 characters?  No: return `HTTP/401`.
-     1. Does `userHandle` exist? No: Return `HTTP/400`.
-     1. Is `userHandle` a non-empty string of 3-64 characters?  No: return `HTTP/400`.
-  1. Open `<root>/secret.dat`
-     1. Error: Return `HTTP/500`
-  1. Read `<root>/secret.dat` contents.  Do contents match `secret` string?  No: Return `HTTP/403`
-  1. Generate random string (`authToken`)
-  1. Generate unique integer (`myId`) for the new user.
-  1. Create file `<root>/users/<myId>.dat` and write `authToken` to the file.
-  1. Generate sha256 hash of `userHandle` as `hashUserHandle`
-  1. Create `<root>/users/<hashUserHandle>` and write `myId` to the file.
-  1. Return `HTTP/200` and the JSON response:
-     ```json
-         {
-          "userId": <int>,
-          "authToken": "<string>"
-         }
-     ```
-
 ## Registration API (`GET`: `/api/v1/register`)
 ### Purpose
   Look up and return a user's id given their handle.
-
 ### Inputs
   ```json
       {
