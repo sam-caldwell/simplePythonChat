@@ -32,7 +32,6 @@ A simple python chat program
           "authToken": "<string>"
         }
     ```
-    Integer (userId, authToken).
   * Failure (`HTTP/400 BAD REQUEST`): your request is malformed.
   * Failure (`HTTP/401 UNAUTHORIZED`): no secret was found in the request
   * Failure (`HTTP/403 FORBIDDEN`): an invalid secret.

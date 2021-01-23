@@ -1,5 +1,3 @@
-from flask import Flask
-
 """
     simplePythonChat API
     (c) 2021 Sam Caldwell, Jenny Faraday.  See LICENSE.txt
@@ -8,40 +6,68 @@ from flask import Flask
     users.
 
 """
+from flask import Flask, request
+from src.register_user import register_user
+from src.query_user import query_user
+from src.chat_send import chat_send
+from src.chat_recv import chat_recv
 
 APP_VERSION = "1.0"
 app = Flask(__name__)
 
-def noop():
-    return "OK", 200
-
 
 @app.route('/')
 def hello_world():
-    message, code = noop()
-    return message, code
+    """
+        Default Route.  Return only http/200 OK.
+        :return: string, int
+    """
+    return "OK", 200
 
 
 @app.route('/api/v1/register', methods=["GET", "POST"])
 def api_v1_register():
-    message, code = register_user()
-    return message, code
+    """
+        User Registration endpoint.
+        :return: string, int
+    """
+    if request.method == "POST":
+        return register_user(request)
+    elif request.method == "GET":
+        return query_user(request)
+    else:
+        return "METHOD NOT SUPPORTED", 405
 
 
 @app.route('/api/v1/chat', methods=["GET", "POST"])
 def api_v1_chat():
-    message, code = noop()
-    return message, code
+    """
+        Message Exchange (send, receive) endpoint
+        :return: string, int
+    """
+    if request.method == "POST":
+        return chat_send(request)
+    elif request.method == "GET":
+        return chat_recv(request)
+    else:
+        return "METHOD NOT SUPPORTED", 405
 
 
 @app.route("/health", methods=["GET"])
 def api_v1_health():
-    message, code = noop()
-    return message, code
+    """
+        Healthcheck endpoint
+        :return: string, int
+    """
+    return "OK", 200
 
 
 @app.route("/version", methods=["GET"])
 def api_v1_version():
+    """
+        Version endpoint
+        :return: string, int
+    """
     return APP_VERSION, 200
 
 
