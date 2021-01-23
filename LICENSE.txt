@@ -1,0 +1,3 @@
+(c) 2021 Sam Caldwell, Jenny Faraday  Public Domain.
+
+This project is released public domain.  Happy hacking!
