@@ -7,7 +7,8 @@ def register_user(request, user_data, auth_secret_file):
     """
         Registration API (POST: /api/v1/register)
 
-        Allows a user to register their handle and get a UserId to post chat messages.
+        Allows a user to register their handle and get a UserId to post
+        chat messages.
 
         :param request: http flask request
         :param user_data: string (directory)
@@ -21,21 +22,13 @@ def register_user(request, user_data, auth_secret_file):
                   "status": "OK"
                 }
             Failure (HTTP/400 BAD REQUEST): your request is malformed.
-                {
-                  "status": "BAD REQUEST"
-                }
-            Failure (HTTP/401 UNAUTHORIZED): no secret was found in the request
-                {
-                  "status": "UNAUTHORIZED"
-                }
+                {"status": "BAD REQUEST"}
+            Failure (HTTP/401 UNAUTHORIZED): no secret found in the request
+                {"status": "UNAUTHORIZED"}
             Failure (HTTP/403 FORBIDDEN): an invalid secret.
-                {
-                  "status": "FORBIDDEN"
-                }
+                {"status": "FORBIDDEN"}
             Failure (HTTP/500 INTERNAL SERVER ERROR): Unhandled exception.
-                {
-                  "status": "INTERNAL SERVER ERROR"
-                }
+                {"status": "INTERNAL SERVER ERROR"}
     """
     secret, user_handle = "", ""
     try:
