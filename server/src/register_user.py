@@ -55,6 +55,7 @@ def register_user(request, user_data, auth_secret_file):
         return json.dumps({"status": "INTERNAL SERVER ERROR"}), 500
 
     # We are authenticated...
+    # Generate the new account and return the user_id and auth_token.
     try:
         user_id = generate_user_id(user_data)
         print(f"user_id: {user_id}")
