@@ -1,5 +1,6 @@
 import json
 from src.generate_user_id import generate_user_id
+from src.authenticate_global import authenticate_global
 from src.create_user_profile import create_user_profile
 
 
@@ -46,11 +47,8 @@ def register_user(request, user_data, auth_secret_file):
         return json.dumps({"status": "BAD_REQUEST"}), 400
 
     try:
-        # Inspect secret to authenticate operation.
-        with open(auth_secret_file, "r") as f:
-            actual_secret = f.read()
-            if actual_secret != secret:
-                return json.dumps({"status": "FORBIDDEN"}), 403
+        if not authenticate_global(auth_secret_file,secret):
+            return json.dumps({"status": "FORBIDDEN"}), 403
         print("registration authentication success")
     except Exception as e:
         print(f"Error(auth): {e}")
