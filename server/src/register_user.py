@@ -47,7 +47,7 @@ def register_user(request, user_data, auth_secret_file):
         return json.dumps({"status": "BAD_REQUEST"}), 400
 
     try:
-        if not authenticate_global(auth_secret_file,secret):
+        if not authenticate_global(auth_secret_file, secret):
             return json.dumps({"status": "FORBIDDEN"}), 403
         print("registration authentication success")
     except Exception as e:
@@ -58,11 +58,10 @@ def register_user(request, user_data, auth_secret_file):
     try:
         user_id = generate_user_id(user_data)
         print(f"user_id: {user_id}")
-
-        create_user_profile(user_data, user_id, user_handle)
-
+        return json.dumps({
+            "user_id": user_id,
+            "auth_token": create_user_profile(user_data, user_id, user_handle)
+        }, indent=4), 200
     except Exception as e:
         print(f"Error(auth): {e}")
         return json.dumps({"status": "INTERNAL SERVER ERROR"}), 500
-
-    return "OK", 200

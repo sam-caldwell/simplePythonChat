@@ -1,7 +1,7 @@
 import hashlib
 
 
-def user_hash(input_string):
+def hash_string(input_string):
     """
         sha256 hash of a given string.
 
