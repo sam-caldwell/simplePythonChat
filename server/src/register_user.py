@@ -1,20 +1,7 @@
 import json
 import time
-import hashlib
 from os.path import join
 from os.path import exists
-
-
-def user_hash(input_string):
-    """
-        sha256 hash of a given string.
-
-        :param input_string: str
-        :return: str (hex)
-    """
-    m = hashlib.sha256()
-    m.update(input_string.encode('ASCII'))
-    return m.hexdigest()
 
 
 def user_profile(user_data, user_id):
@@ -58,7 +45,6 @@ def create_user_profile(user_data, user_id, user_handle):
     with open(user_profile(user_data, user_id), "w") as f:
         print("Create the user file (user_id).")
         f.write(user_hash(user_handle))
-
 
 
 def register_user(request, user_data, auth_secret_file):
