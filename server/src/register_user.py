@@ -2,17 +2,9 @@ import json
 import time
 from os.path import join
 from os.path import exists
+from src.user_hash import user_hash
+from src.user_profile import user_profile
 
-
-def user_profile(user_data, user_id):
-    """
-        Return a filename for the user's profile.
-
-        :param user_data: string
-        :param user_id: string
-        :return: string
-    """
-    return join(user_data, f"{user_id}.dat")
 
 
 def generate_user_id(user_data):
