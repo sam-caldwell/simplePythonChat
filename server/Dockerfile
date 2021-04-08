@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:rolling
 
 ENV MY_AUTH_SECRET="mysecret"
 
